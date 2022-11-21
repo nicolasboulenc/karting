@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>%TITLE%</title>
+
+	<!-- CSS Start -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="karting.css">
+	<link rel="stylesheet" href="autoComplete.js-10.2.6-dist/css/autoComplete.02.css">
+	<!-- CSS End -->
+	<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+	<style>
+	</style>
+</head>
+
+<body class="bg-light">
+<header>
+	<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
+		<!-- <div class="container-fluid"> -->
+		<div class="container">
+			<a class="navbar-brand" href="index.php"><em>KART-STATS</em></a>
+			<button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li id="dashboard_button" class="d-none nav-item">
+						<a class="nav-link" href="driver.php?id=%DRIVER_ID%" role="button">Dashboard</a>
+					</li>
+					<li id="account_button" class="d-none nav-item">
+						<a class="nav-link" href="account.php" role="button">Compte</a>
+					</li>
+					<li id="logout_button" class="d-none nav-item">
+						<a class="btn btn-outline-primary ms-0 ms-md-2 mt-3 mt-md-0" href="login.php?action=logout" role="button">Deconnecter</a>
+					</li>
+					<li id="login_button" class="nav-item text-center text-md-start">
+						<a class="btn btn-outline-primary mt-5 mt-md-0 ms-0 ms-md-2" href="login.php" role="button">Connecter</a>
+					</li>
+				</ul>
+
+				<form class="d-flex mt-5 mt-md-0 justify-content-center">
+					<input autocomplete="off" class="form-control" id="driver_track_navbar_search" type="search" placeholder="Pilote ou circuit" aria-label="Search">
+					<!-- <button class="btn btn-outline-success nav-button" type="submit">Rechercher</button> -->
+				</form>
+			</div>
+		</div>
+	</nav>
+	<div id="user_follow_list" class="d-none nav-scroller bg-body shadow-sm">
+		<nav id="user_follow_elems" class="nav nav-underline container" aria-label="Secondary navigation">
+			%DRIVER_FOLLOW_LIST%
+			%TRACK_FOLLOW_LIST%
+		</nav>
+	</div>
+</header>
+
+<main class="container">
+	<!-- Header end -->
+	<!-- Footer start -->
+</main>
+
+<footer class="footer mt-5">
+	<p>
+		Php <span class="badge rounded-pill bg-secondary">%PHP%S</span>
+		& Sql <span class="badge rounded-pill bg-secondary">%SQL%S</span>
+		& Mem <span class="badge rounded-pill bg-secondary">%MEM%KB</span>
+	</p>
+</footer>
+
+<!-- Scripts Start -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+<script src="autoComplete.js-10.2.6-dist/autoComplete.min.js"></script>
+<script src="chart.js-3.5.1/chart.min.js"></script>
+<script src="chart.js-3.5.1/chartjs-adapter-date-fns-2.0.0.js"></script>
+<!-- Scripts Start -->
+<script>
+
+"use strict";
+document.querySelector('#navbarSideCollapse').addEventListener('click', function () {
+	document.querySelector('.offcanvas-collapse').classList.toggle('open')
+});
+
+const autocomplete_navbar_config = {
+	selector: "#driver_track_navbar_search",
+	placeHolder: "Pilote ou Circuit",
+	data: {
+		src: async (query) => {
+			try {
+				// Fetch Data from external Source
+				const source = await fetch("api.php?action=autocomplete&param=both");
+				const data = await source.json();
+				return data;
+			}
+			catch (error) {
+				return error;
+			}
+		},
+		// Data 'Object' key to be searched
+		keys: ["text"]
+	},
+	resultItem: {
+		highlight: {
+			render: true
+		}
+	}
+}
+const autocomplete_navbar = new autoComplete(autocomplete_navbar_config);
+document.querySelector("#driver_track_navbar_search").addEventListener("selection", function (event) {
+	if(event.detail.selection.value.type === "driver") {
+		location.href = `driver.php?id=${event.detail.selection.value.id}`;
+	}
+	if(event.detail.selection.value.type === "track") {
+		location.href = `track.php?id=${event.detail.selection.value.id}`;
+	}
+});
+</script>
