@@ -1,5 +1,4 @@
 ﻿# Kart-Stats
-*Super Fast*
 
 ***
 
